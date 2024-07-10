@@ -1,6 +1,6 @@
 import "../src/index.css";
 import { closeModal, openModal } from "./components/modal.js";
-import { createCard, deleteCard, likeCard } from "./components/cards.js";
+import { createCard, deleteCard, likeCard } from "./components/card.js";
 import { initialCards } from "./components/cards.js";
 
 // DOM узлы
@@ -17,13 +17,15 @@ const popupImg = document.querySelector(".popup_type_image");
 const buttonCloseImg = popupImg.querySelector(".popup__close");
 
 // DOM элементы форм
-const formElement = popupEdit.querySelector(".popup__form");
-const nameInput = formElement.querySelector(".popup__input_type_name");
-const jobInput = formElement.querySelector(".popup__input_type_description");
+const formElementEdit = popupEdit.querySelector(".popup__form");
+const nameInput = formElementEdit.querySelector(".popup__input_type_name");
+const jobInput = formElementEdit.querySelector(
+  ".popup__input_type_description"
+);
 const formImg = popupAdd.querySelector(".popup__form");
 
 // Функция открытия img
-function popupCard(event) {
+function openPopupCard(event) {
   popupImg.querySelector(".popup__image").src = event.target.src;
   popupImg.querySelector(".popup__image").alt = event.target.alt;
   popupImg.querySelector(".popup__caption").textContent = event.target.alt;
@@ -37,7 +39,7 @@ initialCards.forEach((cardItem) => {
     cardItem.name,
     deleteCard,
     likeCard,
-    popupCard
+    openPopupCard
   );
   cardsContainer.append(card);
 });
@@ -77,14 +79,15 @@ function handleSubmitAdd(evt) {
     nameInputAdd.value,
     deleteCard,
     likeCard,
-    popupCard
+    openPopupCard
   );
   cardsContainer.prepend(cardAdd);
   closeModal(popupAdd);
+  formImg.reset();
 }
 
 // Обработчик отправки формы профиля
-function handleFormSubmit(evt) {
+function handleFormSubmitEdit(evt) {
   evt.preventDefault();
   const name = nameInput.value;
   const job = jobInput.value;
@@ -94,5 +97,5 @@ function handleFormSubmit(evt) {
 }
 
 // Прикрепляем обработчик к форме:
-formElement.addEventListener("submit", handleFormSubmit);
+formElementEdit.addEventListener("submit", handleFormSubmitEdit);
 formImg.addEventListener("submit", handleSubmitAdd);
