@@ -1,3 +1,4 @@
+// Функции открытия и закрытия модального окна
 export function openModal(modal) {
   modal.classList.add("popup_is-opened");
   document.addEventListener("keydown", closePopupByEsc);
@@ -6,7 +7,7 @@ export function openModal(modal) {
 export function closeModal(modal) {
   modal.classList.remove("popup_is-opened");
   document.removeEventListener("keydown", closePopupByEsc);
-  document.removeEventListener("click", closePopupByOverlay);
+  modal.removeEventListener("click", closePopupByOverlay);
 }
 function closePopupByEsc(evt) {
   if (evt.key === "Escape") {
