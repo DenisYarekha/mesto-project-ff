@@ -2,7 +2,6 @@ import "../src/index.css";
 import { closeModal, openModal } from "./components/modal.js";
 import { createCard, deleteCard, likeCard } from "./components/card.js";
 import { enableValidation, clearValidation } from "./components/validation.js";
-import { configArg } from "./components/validation.js";
 import {
   getUserData,
   getCardsData,
@@ -11,6 +10,15 @@ import {
   postNewCard,
   updateUserAvatar,
 } from "./components/api.js";
+
+export const configArg = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
 
 // DOM узлы
 const cardTemplate = document.querySelector("#card-template").content;
@@ -41,7 +49,7 @@ const formImg = popupAdd.querySelector(".popup__form");
 const formAvatar = avatarEdit.querySelector(".popup__form");
 
 //UX кнопки
-const LoadingButton = (isLoading, button) => {
+const loadingButton = (isLoading, button) => {
   if (isLoading) {
     button.textContent = "Сохранение...";
   } else {
@@ -127,27 +135,26 @@ function handleSubmitAdd(evt) {
   evt.preventDefault();
   const nameInputAdd = popupAdd.querySelector(".popup__input_type_card-name");
   const linkInputAdd = popupAdd.querySelector(".popup__input_type_url");
-  LoadingButton(true, popupAdd.querySelector(".popup__button"));
+  loadingButton(true, popupAdd.querySelector(".popup__button"));
   postNewCard(nameInputAdd.value, linkInputAdd.value)
     .then((res) => {
       const newCard = createCard(
-        card,
+        res,
         cardTemplate,
         deleteCard,
         likeCard,
-        openPopupCard
+        openPopupCard,
+        userID
       );
       cardsContainer.prepend(newCard);
       closeModal(popupAdd);
-      console.log(res);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
-      LoadingButton(false, popupAdd.querySelector(".popup__button"));
+      loadingButton(false, popupAdd.querySelector(".popup__button"));
       formImg.reset();
-      closeModal(popupAdd);
     });
 }
 
@@ -156,7 +163,7 @@ function handleFormSubmitEdit(evt) {
   evt.preventDefault();
   const name = nameInput.value;
   const job = jobInput.value;
-  LoadingButton(true, popupEdit.querySelector(".popup__button"));
+  loadingButton(true, popupEdit.querySelector(".popup__button"));
   editProfile(name, job)
     .then((res) => {
       profileTitle.textContent = res.name;
@@ -167,9 +174,8 @@ function handleFormSubmitEdit(evt) {
       console.log(err);
     })
     .finally(() => {
-      LoadingButton(false, popupEdit.querySelector(".popup__button"));
+      loadingButton(false, popupEdit.querySelector(".popup__button"));
       formElementEdit.reset();
-      closeModal(popupEdit);
     });
 }
 
@@ -178,7 +184,7 @@ function handleSubmitAvatar(evt) {
   evt.preventDefault();
   const linkValue = document.querySelector(".avatar__input_type_url").value;
   avatarImage.src = linkValue;
-  LoadingButton(true, avatarEdit.querySelector(".popup__button"));
+  loadingButton(true, avatarEdit.querySelector(".popup__button"));
   updateUserAvatar(linkValue)
     .then((res) => {
       avatarImage.style.backgroundImage = `url(${res.avatar})`;
@@ -188,9 +194,8 @@ function handleSubmitAvatar(evt) {
       console.log(err);
     })
     .finally(() => {
-      LoadingButton(false, avatarEdit.querySelector(".popup__button"));
+      loadingButton(false, avatarEdit.querySelector(".popup__button"));
       formAvatar.reset();
-      closeModal(avatarEdit);
     });
 }
 
@@ -202,7 +207,6 @@ formAvatar.addEventListener("submit", handleSubmitAvatar);
 // Инициализация
 let userID;
 
-getInitialInfo();
 Promise.all([getCardsData(), getUserData()])
   .then(([cards, user]) => {
     profileTitle.textContent = user.name;

@@ -1,11 +1,4 @@
-export const configArg = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
-};
+
 //Показ и скрытие ошибки
 function showError(input, errorElement, config) {
   input.classList.add(config.inputErrorClass);
@@ -29,9 +22,9 @@ function checkInputValidity(input, formElement, config) {
     input.setCustomValidity("");
   }
   if (isInputValid) {
-    hideError(input, errorElement, configArg);
+    hideError(input, errorElement, config);
   } else {
-    showError(input, errorElement, configArg);
+    showError(input, errorElement, config);
   }
 }
 
@@ -50,11 +43,11 @@ function toggleButtonState(submitBtn, isActive, config) {
 function setEventListener(formElement, config) {
   const inputList = formElement.querySelectorAll(config.inputSelector);
   const submitBtn = formElement.querySelector(config.submitButtonSelector);
-  toggleButtonState(submitBtn, formElement.checkValidity(), configArg);
+  toggleButtonState(submitBtn, formElement.checkValidity(), config);
   [...inputList].forEach(function (input) {
     input.addEventListener("input", function () {
-      toggleButtonState(submitBtn, formElement.checkValidity(), configArg);
-      checkInputValidity(input, formElement, configArg);
+      toggleButtonState(submitBtn, formElement.checkValidity(), config); 
+      checkInputValidity(input, formElement, config);
     });
   });
 }
@@ -63,15 +56,17 @@ function setEventListener(formElement, config) {
 export function enableValidation(config) {
   const formList = document.querySelectorAll(config.formSelector);
   [...formList].forEach(function (formElement) {
-    setEventListener(formElement, configArg);
+    setEventListener(formElement, config);
   });
 }
 
 //Очистка ошибок
 export const clearValidation = (formElement, config) => {
   const inputList = formElement.querySelectorAll(config.inputSelector);
+  const submitBtn = formElement.querySelector(config.submitButtonSelector);
+  toggleButtonState(submitBtn, formElement.checkValidity(), config);
   [...inputList].forEach((input) => {
     input.setCustomValidity("");
-    hideError(input, input.nextElementSibling, configArg);
+    hideError(input, input.nextElementSibling, config);
   });
 };
