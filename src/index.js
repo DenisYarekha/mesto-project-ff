@@ -154,7 +154,6 @@ function handleSubmitAdd(evt) {
     })
     .finally(() => {
       loadingButton(false, popupAdd.querySelector(".popup__button"));
-      formImg.reset();
     });
 }
 
@@ -175,7 +174,6 @@ function handleFormSubmitEdit(evt) {
     })
     .finally(() => {
       loadingButton(false, popupEdit.querySelector(".popup__button"));
-      formElementEdit.reset();
     });
 }
 
@@ -195,7 +193,6 @@ function handleSubmitAvatar(evt) {
     })
     .finally(() => {
       loadingButton(false, avatarEdit.querySelector(".popup__button"));
-      formAvatar.reset();
     });
 }
 
